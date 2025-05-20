@@ -19,10 +19,10 @@ python -m venv /workspace/venv
 source /workspace/venv/bin/activate
 
 echo "Installing Torch"
-pip3 install --no-cache-dir torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip3 install --no-cache-dir torch==2.6.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
 echo "Installing xformers"
-pip3 install --no-cache-dir xformers==0.0.29.post1 --index-url https://download.pytorch.org/whl/cu121
+pip3 install --no-cache-dir xformers==0.0.29.post3 --index-url https://download.pytorch.org/whl/cu124
 
 echo "Installing ComfyUI"
 pip3 install -r requirements.txt
