@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 import requests
 import traceback
@@ -20,6 +21,7 @@ VOLUME_MOUNT_PATH = '/runpod-volume'
 LOG_FILE = 'comfyui-worker.log'
 TIMEOUT = 600
 LOG_LEVEL = 'INFO'
+DISK_MIN_FREE_BYTES = 500 * 1024 * 1024  # 500MB in bytes
 
 
 # ---------------------------------------------------------------------------- #
@@ -427,6 +429,108 @@ def get_container_cpu_info(job_id=None):
         return {}
 
 
+def get_container_disk_info(job_id=None):
+    """
+    Get disk space information available to the container.
+    Returns a dictionary with disk space stats.
+    Also logs the disk space information directly.
+    """
+    try:
+        disk_info = {}
+
+        # Get disk usage statistics for the root (/) mount
+        try:
+            import shutil
+            total, used, free = shutil.disk_usage('/')
+            disk_info['total_bytes'] = total
+            disk_info['used_bytes'] = used
+            disk_info['free_bytes'] = free
+            disk_info['usage_percent'] = (used / total) * 100
+        except Exception as e:
+            if job_id:
+                logging.warning(f'Failed to get disk usage stats: {str(e)}', extra={'job_id': job_id})
+            else:
+                logging.warning(f'Failed to get disk usage stats: {str(e)}')
+
+        # Try to get disk quota information from cgroups v2
+        try:
+            with open('/sys/fs/cgroup/io.stat', 'r') as f:
+                content = f.read().strip()
+                if content:
+                    disk_info['io_stats_raw'] = content
+        except FileNotFoundError:
+            # Try cgroups v1
+            try:
+                with open('/sys/fs/cgroup/blkio/blkio.throttle.io_service_bytes', 'r') as f:
+                    for line in f:
+                        parts = line.strip().split()
+                        if len(parts) >= 3 and 'Total' in line:
+                            disk_info['io_bytes'] = int(parts[2])
+                            break
+            except FileNotFoundError:
+                try:
+                    with open('/sys/fs/cgroup/blkio.throttle.io_service_bytes', 'r') as f:
+                        for line in f:
+                            parts = line.strip().split()
+                            if len(parts) >= 3 and 'Total' in line:
+                                disk_info['io_bytes'] = int(parts[2])
+                                break
+                except FileNotFoundError:
+                    if job_id:
+                        logging.warning('Could not find cgroup disk I/O information', extra={'job_id': job_id})
+                    else:
+                        logging.warning('Could not find cgroup disk I/O information')
+
+        # Get disk inodes information (important for container environments)
+        try:
+            import os
+            stat = os.statvfs('/')
+            disk_info['total_inodes'] = stat.f_files
+            disk_info['free_inodes'] = stat.f_ffree
+            disk_info['used_inodes'] = stat.f_files - stat.f_ffree
+            if stat.f_files > 0:
+                disk_info['inodes_usage_percent'] = ((stat.f_files - stat.f_ffree) / stat.f_files) * 100
+        except Exception as e:
+            if job_id:
+                logging.warning(f'Failed to get inode information: {str(e)}', extra={'job_id': job_id})
+            else:
+                logging.warning(f'Failed to get inode information: {str(e)}')
+
+        # Log disk information
+        disk_log_parts = []
+        if 'total_bytes' in disk_info:
+            disk_log_parts.append(f"Total={disk_info['total_bytes']/(1024**3):.2f}GB")
+        if 'used_bytes' in disk_info:
+            disk_log_parts.append(f"Used={disk_info['used_bytes']/(1024**3):.2f}GB")
+        if 'free_bytes' in disk_info:
+            disk_log_parts.append(f"Free={disk_info['free_bytes']/(1024**3):.2f}GB")
+        if 'usage_percent' in disk_info:
+            disk_log_parts.append(f"Usage={disk_info['usage_percent']:.2f}%")
+        if 'inodes_usage_percent' in disk_info:
+            disk_log_parts.append(f"Inodes={disk_info['inodes_usage_percent']:.2f}%")
+        if 'io_bytes' in disk_info:
+            disk_log_parts.append(f"I/O={disk_info['io_bytes']/(1024**2):.2f}MB")
+
+        if disk_log_parts:
+            if job_id:
+                logging.info(f"Container Disk: {', '.join(disk_log_parts)}", extra={'job_id': job_id})
+            else:
+                logging.info(f"Container Disk: {', '.join(disk_log_parts)}")
+        else:
+            if job_id:
+                logging.info('Container disk space information not available', extra={'job_id': job_id})
+            else:
+                logging.info('Container disk space information not available')
+
+        return disk_info
+    except Exception as e:
+        if job_id:
+            logging.error(f'Error getting container disk info: {str(e)}', extra={'job_id': job_id})
+        else:
+            logging.error(f'Error getting container disk info: {str(e)}')
+        return {}
+
+
 # ---------------------------------------------------------------------------- #
 #                                RunPod Handler                                #
 # ---------------------------------------------------------------------------- #
@@ -437,6 +541,12 @@ def handler(event):
     try:
         memory_info = get_container_memory_info(job_id)
         cpu_info = get_container_cpu_info(job_id)
+        disk_info = get_container_disk_info(job_id)
+        disk_free_bytes = disk_info.get('free_bytes')
+
+        if disk_free_bytes and disk_free_bytes < DISK_MIN_FREE_BYTES:
+            free_gb = disk_free_bytes / (1024**3)
+            raise Exception(f'Insufficient free container disk space: {free_gb:.2f} GB available (minimum 0.5 GB required)')
 
         validated_input = validate(event['input'], INPUT_SCHEMA)
 
