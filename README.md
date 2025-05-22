@@ -26,7 +26,7 @@ Network Volume.
 1. [Install ComfyUI on your Network Volume](
    docs/installing.md)
 2. [Building the Docker image](docs/building.md)
-3. [Deploying on RunPod Serveless](docs/deploying.md)
+3. [Deploying on RunPod Serverless](docs/deploying.md)
 
 ## RunPod API Endpoint
 
