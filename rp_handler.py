@@ -440,7 +440,6 @@ def get_container_disk_info(job_id=None):
 
         # Get disk usage statistics for the root (/) mount
         try:
-            import shutil
             total, used, free = shutil.disk_usage('/')
             disk_info['total_bytes'] = total
             disk_info['used_bytes'] = used
@@ -448,9 +447,9 @@ def get_container_disk_info(job_id=None):
             disk_info['usage_percent'] = (used / total) * 100
         except Exception as e:
             if job_id:
-                logging.warning(f'Failed to get disk usage stats: {str(e)}', extra={'job_id': job_id})
+                logging.warning(f'Failed to get disk usage stats: {str(e)}', job_id)
             else:
-                logging.warning(f'Failed to get disk usage stats: {str(e)}')
+                logging.warning(f'Failed to get disk usage stats: {str(e)}', job_id)
 
         # Try to get disk quota information from cgroups v2
         try:
@@ -477,9 +476,9 @@ def get_container_disk_info(job_id=None):
                                 break
                 except FileNotFoundError:
                     if job_id:
-                        logging.warning('Could not find cgroup disk I/O information', extra={'job_id': job_id})
+                        logging.warning('Could not find cgroup disk I/O information', job_id)
                     else:
-                        logging.warning('Could not find cgroup disk I/O information')
+                        logging.warning('Could not find cgroup disk I/O information', job_id)
 
         # Get disk inodes information (important for container environments)
         try:
@@ -492,9 +491,9 @@ def get_container_disk_info(job_id=None):
                 disk_info['inodes_usage_percent'] = ((stat.f_files - stat.f_ffree) / stat.f_files) * 100
         except Exception as e:
             if job_id:
-                logging.warning(f'Failed to get inode information: {str(e)}', extra={'job_id': job_id})
+                logging.warning(f'Failed to get inode information: {str(e)}', job_id)
             else:
-                logging.warning(f'Failed to get inode information: {str(e)}')
+                logging.warning(f'Failed to get inode information: {str(e)}', job_id)
 
         # Log disk information
         disk_log_parts = []
@@ -513,21 +512,21 @@ def get_container_disk_info(job_id=None):
 
         if disk_log_parts:
             if job_id:
-                logging.info(f"Container Disk: {', '.join(disk_log_parts)}", extra={'job_id': job_id})
+                logging.info(f"Container Disk: {', '.join(disk_log_parts)}", job_id)
             else:
-                logging.info(f"Container Disk: {', '.join(disk_log_parts)}")
+                logging.info(f"Container Disk: {', '.join(disk_log_parts)}", job_id)
         else:
             if job_id:
-                logging.info('Container disk space information not available', extra={'job_id': job_id})
+                logging.info('Container disk space information not available', job_id)
             else:
-                logging.info('Container disk space information not available')
+                logging.info('Container disk space information not available', job_id)
 
         return disk_info
     except Exception as e:
         if job_id:
-            logging.error(f'Error getting container disk info: {str(e)}', extra={'job_id': job_id})
+            logging.error(f'Error getting container disk info: {str(e)}', job_id)
         else:
-            logging.error(f'Error getting container disk info: {str(e)}')
+            logging.error(f'Error getting container disk info: {str(e)}', job_id)
         return {}
 
 
@@ -622,16 +621,19 @@ def handler(event):
                                 with open(image_path, 'rb') as image_file:
                                     image_data = base64.b64encode(image_file.read()).decode('utf-8')
                                     images.append(image_data)
-                                    logging.info(f'Deleting output file: {image_path}')
+                                    logging.info(f'Deleting output file: {image_path}', job_id)
                                     os.remove(image_path)
                         elif output_image['type'] == 'temp':
                             image_path = f'{VOLUME_MOUNT_PATH}/ComfyUI/temp/{filename}'
 
                             # Clean up temp images that aren't used by the API
                             if os.path.exists(image_path):
-                                logging.info(f"Deleting temp file: {image_path}")
-                                os.remove(image_path)
+                                logging.info(f'Deleting temp file: {image_path}', job_id)
 
+                                try:
+                                    os.remove(image_path)
+                                except Exception as e:
+                                    logging.error(f'Error deleting temp file {image_path}: {e}')
                     return {
                         'images': images
                     }
@@ -651,8 +653,8 @@ def handler(event):
                             # Log to file instead of RunPod because the output tends to be too verbose
                             # and gets dropped by RunPod logging
                             error_msg = f'Job did not process successfully for prompt_id: {prompt_id}'
-                            logging.error(error_msg)
-                            logging.info(f'{job_id}: Response JSON: {resp_json}')
+                            logging.error(error_msg, job_id)
+                            logging.info(f'{job_id}: Response JSON: {resp_json}', job_id)
                             raise RuntimeError(error_msg)
 
         else:
