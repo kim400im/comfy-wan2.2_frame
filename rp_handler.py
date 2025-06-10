@@ -543,10 +543,10 @@ def handler(event):
         memory_available_gb = memory_info.get('available')
         disk_free_bytes = disk_info.get('free_bytes')
 
-        if memory_available_gb and memory_available_gb < 1.0:
+        if memory_available_gb is not None and memory_available_gb < 1.0:
             raise Exception(f'Insufficient available container memory: {memory_available_gb:.2f} GB available (minimum 1.0 GB required)')
 
-        if disk_free_bytes and disk_free_bytes < DISK_MIN_FREE_BYTES:
+        if disk_free_bytes is not None and disk_free_bytes < DISK_MIN_FREE_BYTES:
             free_gb = disk_free_bytes / (1024**3)
             raise Exception(f'Insufficient free container disk space: {free_gb:.2f} GB available (minimum 0.5 GB required)')
 
@@ -637,9 +637,19 @@ def handler(event):
                                     os.remove(image_path)
                                 except Exception as e:
                                     logging.error(f'Error deleting temp file {image_path}: {e}')
-                    return {
+
+                    response = {
                         'images': images
                     }
+
+                    # Refresh worker if memory is low
+                    memory_info = get_container_memory_info(job_id)
+                    memory_available_gb = memory_info.get('available')
+
+                    if memory_available_gb is not None and memory_available_gb < 1.0:
+                        response['refresh_worker'] = True
+
+                    return response
                 else:
                     raise RuntimeError(f'No output found for prompt id: {prompt_id}')
             else:
