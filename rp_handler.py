@@ -647,6 +647,7 @@ def handler(event):
                     memory_available_gb = memory_info.get('available')
 
                     if memory_available_gb is not None and memory_available_gb < 1.0:
+                        logging.info(f'Low memory detected: {memory_available_gb:.2f} GB available, refreshing worker', job_id)
                         response['refresh_worker'] = True
 
                     return response
