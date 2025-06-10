@@ -539,7 +539,12 @@ def handler(event):
         memory_info = get_container_memory_info(job_id)
         cpu_info = get_container_cpu_info(job_id)
         disk_info = get_container_disk_info(job_id)
+
+        memory_available_gb = memory_info.get('available')
         disk_free_bytes = disk_info.get('free_bytes')
+
+        if memory_available_gb and memory_available_gb < 1.0:
+            raise Exception(f'Insufficient available container memory: {memory_available_gb:.2f} GB available (minimum 1.0 GB required)')
 
         if disk_free_bytes and disk_free_bytes < DISK_MIN_FREE_BYTES:
             free_gb = disk_free_bytes / (1024**3)
