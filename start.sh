@@ -17,4 +17,4 @@ python main.py --port 3000 > /workspace/logs/comfyui-serverless.log 2>&1 &
 deactivate
 
 echo "Starting RunPod Handler"
-python3 -u /rp_handler.py
+python3 -u /handler.py

@@ -64,7 +64,7 @@ You can optionally [Enable a Webhook](docs/api/webhook.md).
 
 ## Serverless Handler
 
-The serverless handler (`rp_handler.py`) is a Python script that handles
+The serverless handler (`handler.py`) is a Python script that handles
 the API requests to your Endpoint using the [runpod](https://github.com/runpod/runpod-python)
 Python library.  It defines a function `handler(event)` that takes an
 API request (event), runs the inference using the model(s) from your
