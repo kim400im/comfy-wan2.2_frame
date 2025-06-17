@@ -627,7 +627,6 @@ def handler(event):
                                     logging.info(f'Deleting output file: {image_path}', job_id)
                                     os.remove(image_path)
                         elif output_image['type'] == 'temp':
-                            logging.info(f'Processing temp image: {output_image}', job_id)
                             image_path = f'{VOLUME_MOUNT_PATH}/ComfyUI/temp/{filename}'
 
                             # Clean up temp images that aren't used by the API
