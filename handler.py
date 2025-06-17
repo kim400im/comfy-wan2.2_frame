@@ -638,6 +638,19 @@ def handler(event):
                                     os.remove(image_path)
                                 except Exception as e:
                                     logging.error(f'Error deleting temp file {image_path}: {e}')
+                            else:
+                                # Check if the image exists in the /tmp directory
+                                # NOTE: This is a specific workaround in a ComfyUI fork, and should
+                                # not be present in the official ComfyUI Github repository.
+                                image_path = f'/tmp/{filename}'
+
+                                if os.path.exists(image_path):
+                                    logging.info(f'Deleting temp file: {image_path}', job_id)
+
+                                    try:
+                                        os.remove(image_path)
+                                    except Exception as e:
+                                        logging.error(f'Error deleting temp file {image_path}: {e}')
 
                     response = {
                         'images': images
