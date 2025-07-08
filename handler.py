@@ -627,9 +627,9 @@ def handler(event):
                                     logging.info(f'Deleting output file: {image_path}', job_id)
                                     os.remove(image_path)
                         elif output_image['type'] == 'temp':
+                            # First check if the temp image exists in the mounted volume
                             image_path = f'{VOLUME_MOUNT_PATH}/ComfyUI/temp/{filename}'
 
-                            # Clean up temp images that aren't used by the API
                             if os.path.exists(image_path):
                                 logging.info(f'Deleting temp file: {image_path}', job_id)
 
@@ -638,9 +638,9 @@ def handler(event):
                                 except Exception as e:
                                     logging.error(f'Error deleting temp file {image_path}: {e}')
                             else:
-                                # Check if the image exists in the /tmp directory
-                                # NOTE: This is a specific workaround in a ComfyUI fork, and should
-                                # not be present in the official ComfyUI Github repository.
+                                # Then check if the temp image exists in the /tmp directory
+                                # This should be where they are located as a result of the
+                                # --temp-directory /tmp command line argument in the start.sh script
                                 image_path = f'/tmp/temp/{filename}'
 
                                 if os.path.exists(image_path):
