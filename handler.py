@@ -641,7 +641,7 @@ def handler(event):
                                 # Check if the image exists in the /tmp directory
                                 # NOTE: This is a specific workaround in a ComfyUI fork, and should
                                 # not be present in the official ComfyUI Github repository.
-                                image_path = f'/tmp/{filename}'
+                                image_path = f'/tmp/temp/{filename}'
 
                                 if os.path.exists(image_path):
                                     logging.info(f'Deleting temp file: {image_path}', job_id)
