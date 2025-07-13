@@ -9,9 +9,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 WORKDIR /
 
 # Upgrade apt packages and install required dependencies
-RUN apt update && \
-    apt upgrade -y && \
-    apt install -y \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
       python3-dev \
       python3-pip \
       fonts-dejavu-core \
@@ -31,9 +30,9 @@ RUN apt update && \
       libgoogle-perftools4 \
       libtcmalloc-minimal4 \
       procps && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean -y
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # Set Python
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
