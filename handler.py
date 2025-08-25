@@ -18,9 +18,9 @@ from botocore.client import Config
 import random
 
 
-APP_NAME = 'runpod-worker-comfyui'
+APP_NAME = 'runpod-wan22t2v-comfyui'
 BASE_URI = 'http://127.0.0.1:3000'
-VOLUME_MOUNT_PATH = '/runpod-volume'
+VOLUME_MOUNT_PATH = '/workspace'
 LOG_FILE = 'comfyui-worker.log'
 TIMEOUT = 600
 LOG_LEVEL = 'INFO'
@@ -173,48 +173,12 @@ def send_post_request(endpoint, payload):
         timeout=TIMEOUT
     )
 
-
-def get_txt2img_payload(workflow, payload):
-    workflow["3"]["inputs"]["seed"] = payload["seed"]
-    workflow["3"]["inputs"]["steps"] = payload["steps"]
-    workflow["3"]["inputs"]["cfg"] = payload["cfg_scale"]
-    workflow["3"]["inputs"]["sampler_name"] = payload["sampler_name"]
-    workflow["4"]["inputs"]["ckpt_name"] = payload["ckpt_name"]
-    workflow["5"]["inputs"]["batch_size"] = payload["batch_size"]
-    workflow["5"]["inputs"]["width"] = payload["width"]
-    workflow["5"]["inputs"]["height"] = payload["height"]
-    workflow["6"]["inputs"]["text"] = payload["prompt"]
-    workflow["7"]["inputs"]["text"] = payload["negative_prompt"]
-    return workflow
-
-
-def get_img2img_payload(workflow, payload):
-    workflow["13"]["inputs"]["seed"] = payload["seed"]
-    workflow["13"]["inputs"]["steps"] = payload["steps"]
-    workflow["13"]["inputs"]["cfg"] = payload["cfg_scale"]
-    workflow["13"]["inputs"]["sampler_name"] = payload["sampler_name"]
-    workflow["13"]["inputs"]["scheduler"] = payload["scheduler"]
-    workflow["13"]["inputs"]["denoise"] = payload["denoise"]
-    workflow["1"]["inputs"]["ckpt_name"] = payload["ckpt_name"]
-    workflow["2"]["inputs"]["width"] = payload["width"]
-    workflow["2"]["inputs"]["height"] = payload["height"]
-    workflow["2"]["inputs"]["target_width"] = payload["width"]
-    workflow["2"]["inputs"]["target_height"] = payload["height"]
-    workflow["4"]["inputs"]["width"] = payload["width"]
-    workflow["4"]["inputs"]["height"] = payload["height"]
-    workflow["4"]["inputs"]["target_width"] = payload["width"]
-    workflow["4"]["inputs"]["target_height"] = payload["height"]
-    workflow["6"]["inputs"]["text"] = payload["prompt"]
-    workflow["7"]["inputs"]["text"] = payload["negative_prompt"]
-    return workflow
-
-def get_wan_video_payload(workflow, payload):
-    workflow["161"]["inputs"]["positive_prompt"] = payload["positive_prompt"]
-    workflow["59"]["inputs"]["lora"] = payload["lora"]
-    workflow["27"]["inputs"]["seed"] = random.randint(0, 2**32 - 1)
-    workflow["37"]["inputs"]["width"] = payload["width"]
-    workflow["37"]["inputs"]["height"] = payload["height"]
-    workflow["37"]["inputs"]["num_frames"] = payload["num_frames"]
+def get_wan22_tv2_payload(workflow, payload):
+    workflow["74"]["inputs"]["text"] = payload["positive_prompt"]
+    workflow["67"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
+    workflow["80"]["inputs"]["width"] = payload["width"]
+    workflow["80"]["inputs"]["height"] = payload["height"]
+    workflow["80"]["inputs"]["length"] = payload["num_frames"]
     return workflow
 
 
@@ -222,10 +186,8 @@ def get_workflow_payload(workflow_name, payload):
     with open(f'/workflows/{workflow_name}.json', 'r') as json_file:
         workflow = json.load(json_file)
 
-    if workflow_name == 'txt2img':
-        workflow = get_txt2img_payload(workflow, payload)
-    if workflow_name == "wan_video":
-        workflow = get_wan_video_payload(workflow, payload)
+    if workflow_name == "wan2.2_t2v":
+        workflow = get_wan22_tv2_payload(workflow, payload)
 
     return workflow
 
@@ -597,7 +559,7 @@ def handler(event):
         payload = payload['payload']
 
         if workflow_name == 'default':
-            workflow_name = 'txt2img'
+            workflow_name = 'wan2.2_t2v'
 
         logging.info(f'Workflow: {workflow_name}', job_id)
 
