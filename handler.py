@@ -608,9 +608,10 @@ def handler(event):
                 # Job was processed successfully
                 outputs = resp_json[prompt_id]['outputs']
 
+
                 if len(outputs):
                     logging.info(f'Images generated successfully for prompt: {prompt_id}', job_id)
-                    filename = f"videos/{prefix}_00001.mp4"
+                    filename = f"videos/{prefix}.mp4"
 
                     image_path = f'{VOLUME_MOUNT_PATH}/ComfyUI/output/{prefix}_00001.mp4'
                     public_url = upload_to_s3(image_path, filename)

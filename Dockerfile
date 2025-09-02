@@ -64,12 +64,10 @@ RUN wget -O /workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.s
     wget -O /workspace/ComfyUI/models/loras/Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors \
       "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors"
 
-# 7. RunPod 핸들러 및 설정 복사
-RUN mkdir -p /workspace/logs
-
-COPY start.sh handler.py /workspace/
+# 6. RunPod 핸들러 및 설정 복사
+COPY start.sh handler.py ./
 COPY schemas /workspace/schemas
-COPY workflows /workspace/workflows
+COPY workflows /workflows
 
 RUN chmod +x /workspace/start.sh
 ENTRYPOINT ["/workspace/start.sh"]
