@@ -18,17 +18,17 @@ from botocore.client import Config
 import random
 
 
-APP_NAME = 'runpod-wan22t2v-comfyui'
+APP_NAME = 'runpod-wan22i2i-comfyui'
 BASE_URI = 'http://127.0.0.1:3000'
 VOLUME_MOUNT_PATH = '/workspace'
 LOG_FILE = 'comfyui-worker.log'
 TIMEOUT = 600
 LOG_LEVEL = 'INFO'
 DISK_MIN_FREE_BYTES = 500 * 1024 * 1024  # 500MB in bytes
-S3_ENDPOINT = 'https://f07373fd866c2022dc69c4cd2218aff2.r2.cloudflarestorage.com/'
-S3_ACCESS_KEY = 'a430d35c83ac671918a733ca24d62022'
-S3_SECRET_KEY = '39cdcf3e97184769b5ab280d32d4f5bcaccf36b2181d8b056dfe1ea200eefb65'
-S3_BUCKET = 'hoit-storage'
+S3_ENDPOINT = 'https://e5c7b06efd26dca82052f09f56bf41f8.r2.cloudflarestorage.com/'
+S3_ACCESS_KEY = 'fb83b20be85c671541c4b25553f7da0d'
+S3_SECRET_KEY = 'a293bea62d559991cf38c9cf2edd69d89394764e7ebd5ed7880659c7d5271337'
+S3_BUCKET = 'vibra-storage'
 
 # ---------------------------------------------------------------------------- #
 #                               Custom Log Handler                             #
@@ -174,11 +174,12 @@ def send_post_request(endpoint, payload):
     )
 
 def get_wan22_tv2_payload(workflow, payload):
-    workflow["74"]["inputs"]["text"] = payload["positive_prompt"]
-    workflow["67"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
-    workflow["80"]["inputs"]["width"] = payload["width"]
-    workflow["80"]["inputs"]["height"] = payload["height"]
-    workflow["80"]["inputs"]["length"] = payload["num_frames"]
+    workflow["6"]["inputs"]["text"] = payload["positive_prompt"]
+    workflow["58"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
+    workflow["94"]["inputs"]["width"] = payload["width"]
+    workflow["94"]["inputs"]["height"] = payload["height"]
+    workflow["95"]["inputs"]["image"] = payload["start_image"]
+    workflow["52"]["inputs"]["image"] = payload["last_image"]
     return workflow
 
 
@@ -186,7 +187,7 @@ def get_workflow_payload(workflow_name, payload):
     with open(f'/workflows/{workflow_name}.json', 'r') as json_file:
         workflow = json.load(json_file)
 
-    if workflow_name == "wan2.2_t2v":
+    if workflow_name == "wan2.2_i2v_frame":
         workflow = get_wan22_tv2_payload(workflow, payload)
 
     return workflow
@@ -524,7 +525,7 @@ def upload_to_s3(local_path, filename):
     )
     s3.upload_file(local_path, S3_BUCKET, filename)
 
-    public_url = f"https://image.hoit.ai.kr/{filename}"
+    public_url = f"https://image.vibra.ai.kr/{filename}"
     return public_url
 
 
@@ -559,7 +560,7 @@ def handler(event):
         payload = payload['payload']
 
         if workflow_name == 'default':
-            workflow_name = 'wan2.2_t2v'
+            workflow_name = 'wan2.2_i2v_frame'
 
         logging.info(f'Workflow: {workflow_name}', job_id)
 

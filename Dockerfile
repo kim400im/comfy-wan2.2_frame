@@ -55,12 +55,16 @@ RUN mkdir -p /workspace/ComfyUI/models/unet && \
 # 모델 다운로드
 RUN wget -O /workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors \
       "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors" && \
-    wget -O /workspace/ComfyUI/models/unet/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors \
-      "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors" && \
-    wget -O /workspace/ComfyUI/models/unet/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors \
-      "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors" && \
+    wget -O /workspace/ComfyUI/models/unet/wan2.2/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors \
+      "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors" && \
+    wget -O /workspace/ComfyUI/models/unet/wan2.2/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors \
+      "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors" && \
     wget -O /workspace/ComfyUI/models/vae/wan_2.1_vae.safetensors \
       "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors" && \
+    wget -O /workspace/ComfyUI/models/loras/wan2.2_lora/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors \
+      "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors" && \
+    wget -O /workspace/ComfyUI/models/loras/wan2.2_lora/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors \
+      "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors" && \
     wget -O /workspace/ComfyUI/models/loras/Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors \
       "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors"
 
