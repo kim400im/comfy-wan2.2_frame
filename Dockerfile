@@ -37,7 +37,8 @@ RUN apt-get update && \
 # 2. ComfyUI + custom_nodes 설치
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && \
     git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git /workspace/ComfyUI/custom_nodes/ComfyUI-VideoHelperSuite && \
-    git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git /workspace/ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation
+    git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git /workspace/ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation && \
+    git clone https://github.com/yolain/ComfyUI-Easy-Use.git /workspace/ComfyUI/custom_nodes/ComfyUI-Easy-Use
 
 # 3. Python venv 생성 및 requirements 설치
 RUN python3 -m venv /workspace/venv && \
@@ -46,6 +47,7 @@ RUN python3 -m venv /workspace/venv && \
     /workspace/venv/bin/pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt && \
     /workspace/venv/bin/pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt && \
     /workspace/venv/bin/python /workspace/ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/install.py && \
+    /workspace/venv/bin/pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-Easy-Use/requirements.txt && \
     /workspace/venv/bin/pip install runpod==1.7.10 boto3 requests
 
 # 모델 폴더 생성
