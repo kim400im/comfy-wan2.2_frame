@@ -45,7 +45,7 @@ RUN python3 -m venv /workspace/venv && \
     /workspace/venv/bin/pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu129 && \
     /workspace/venv/bin/pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt && \
     /workspace/venv/bin/pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt && \
-    /workspace/venv/bin/pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/requirements.txt && \
+    /workspace/venv/bin/python /workspace/ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/install.py && \
     /workspace/venv/bin/pip install runpod==1.7.10 boto3 requests
 
 # 모델 폴더 생성
