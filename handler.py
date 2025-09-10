@@ -588,8 +588,8 @@ def handler(event):
         payload = payload['payload']
 
         # i2v 할 때 넣기 
-        payload['start_image'] = save_to_network_volume(payload['image_url'])
-        payload['last_image'] = save_to_network_volume(payload['image_url'])
+        payload['start_image'] = save_to_network_volume(payload['image_url_start'])
+        payload['last_image'] = save_to_network_volume(payload['image_url_end'])
 
         if workflow_name == 'default':
             workflow_name = 'wan2.2_i2v_frame'
