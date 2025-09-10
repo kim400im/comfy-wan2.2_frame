@@ -408,6 +408,34 @@ def get_container_cpu_info(job_id=None):
         logging.error(f'Error getting container CPU info: {str(e)}', job_id)
         return {}
 
+# i2v 용 저장 
+def save_to_network_volume(url):
+    """
+    주어진 이미지 URL을 ComfyUI input 디렉토리에 저장합니다.
+    저장된 파일 이름만 반환합니다.
+    """
+    try:
+        save_dir = f"{VOLUME_MOUNT_PATH}/ComfyUI/input"
+
+        parsed = urlparse(url)
+        ext = os.path.splitext(parsed.path)[1] or ".png"
+
+        filename = f"{uuid.uuid4().hex}{ext}"
+        filepath = os.path.join(save_dir, filename)
+
+        response = requests.get(url, stream=True, timeout=10)
+        response.raise_for_status()
+
+        with open(filepath, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+        print(f"저장 완료: {filepath}")
+        return filename
+
+    except Exception as e:
+        print(f"저장 실패: {e}")
+        return None
 
 def get_container_disk_info(job_id=None):
     """
@@ -558,6 +586,10 @@ def handler(event):
         payload = validated_input['validated_input']
         workflow_name = payload['workflow']
         payload = payload['payload']
+
+        # i2v 할 때 넣기 
+        payload['start_image'] = save_to_network_volume(payload['image_url'])
+        payload['last_image'] = save_to_network_volume(payload['image_url'])
 
         if workflow_name == 'default':
             workflow_name = 'wan2.2_i2v_frame'
