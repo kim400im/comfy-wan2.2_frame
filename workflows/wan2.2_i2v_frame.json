@@ -128,24 +128,6 @@
       "title": "고급 KSampler"
     }
   },
-  "61": {
-    "inputs": {
-      "unet_name": "wan2.2_i2v_high_noise_14B_Q4_K_S.gguf"
-    },
-    "class_type": "UnetLoaderGGUF",
-    "_meta": {
-      "title": "Unet Loader (GGUF)"
-    }
-  },
-  "62": {
-    "inputs": {
-      "unet_name": "wan2.2_i2v_low_noise_14B_Q4_K_S.gguf"
-    },
-    "class_type": "UnetLoaderGGUF",
-    "_meta": {
-      "title": "Unet Loader (GGUF)"
-    }
-  },
   "64": {
     "inputs": {
       "lora_name": "wan2.2_lora/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors",
@@ -204,7 +186,7 @@
     "inputs": {
       "frame_rate": 24,
       "loop_count": 0,
-      "filename_prefix": "2025-09-10/ComfyUI_20250910_195848_Wan-2.2_I2V",
+      "filename_prefix": "2025-09-10/ComfyUI_20250910_202814_Wan-2.2_I2V",
       "format": "video/h264-mp4",
       "pix_fmt": "yuv420p",
       "crf": 15,
@@ -238,16 +220,6 @@
     "class_type": "RIFE VFI",
     "_meta": {
       "title": "RIFE VFI (recommend rife47 and rife49)"
-    }
-  },
-  "84": {
-    "inputs": {
-      "clip_name": "umt5-xxl-encoder-Q5_K_M.gguf",
-      "type": "wan"
-    },
-    "class_type": "CLIPLoaderGGUF",
-    "_meta": {
-      "title": "CLIPLoader (GGUF)"
     }
   },
   "93": {
@@ -294,22 +266,9 @@
       "title": "WAN 비디오 생성 (시작-끝 프레임)"
     }
   },
-  "97": {
-    "inputs": {
-      "model": "VACE-Wan2.1-1.3B-Preveiw/diffusion_pytorch_model.safetensors",
-      "base_precision": "bf16",
-      "quantization": "disabled",
-      "load_device": "main_device",
-      "attention_mode": "sdpa"
-    },
-    "class_type": "WanVideoModelLoader",
-    "_meta": {
-      "title": "WanVideo Model Loader"
-    }
-  },
   "98": {
     "inputs": {
-      "unet_name": "wan2.2/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+      "unet_name": "wan2.2\\wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader",
@@ -319,7 +278,7 @@
   },
   "99": {
     "inputs": {
-      "unet_name": "wan2.2/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+      "unet_name": "wan2.2\\wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader",
