@@ -268,7 +268,7 @@
   },
   "98": {
     "inputs": {
-      "unet_name": "wan2.2\\wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+      "unet_name": "wan2.2/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader",
@@ -278,7 +278,7 @@
   },
   "99": {
     "inputs": {
-      "unet_name": "wan2.2\\wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+      "unet_name": "wan2.2/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader",
