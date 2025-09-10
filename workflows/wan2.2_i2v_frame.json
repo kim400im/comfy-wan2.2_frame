@@ -62,19 +62,10 @@
       "title": "VAE 로드"
     }
   },
-  "52": {
-    "inputs": {
-      "image": "tomato_00796.png"
-    },
-    "class_type": "LoadImage",
-    "_meta": {
-      "title": "Last Frame"
-    }
-  },
   "57": {
     "inputs": {
       "add_noise": "enable",
-      "noise_seed": 846126844607933,
+      "noise_seed": 193661364289802,
       "steps": 5,
       "cfg": 1,
       "sampler_name": "uni_pc",
@@ -107,7 +98,7 @@
   "58": {
     "inputs": {
       "add_noise": "disable",
-      "noise_seed": 440216938652765,
+      "noise_seed": 134485320678284,
       "steps": 5,
       "cfg": 1,
       "sampler_name": "uni_pc",
@@ -137,9 +128,27 @@
       "title": "고급 KSampler"
     }
   },
+  "61": {
+    "inputs": {
+      "unet_name": "wan2.2_i2v_high_noise_14B_Q4_K_S.gguf"
+    },
+    "class_type": "UnetLoaderGGUF",
+    "_meta": {
+      "title": "Unet Loader (GGUF)"
+    }
+  },
+  "62": {
+    "inputs": {
+      "unet_name": "wan2.2_i2v_low_noise_14B_Q4_K_S.gguf"
+    },
+    "class_type": "UnetLoaderGGUF",
+    "_meta": {
+      "title": "Unet Loader (GGUF)"
+    }
+  },
   "64": {
     "inputs": {
-      "lora_name": "wan2.2_lora/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors",
+      "lora_name": "wan2.2_lora\\Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors",
       "strength_model": 0.9,
       "model": [
         "98",
@@ -153,7 +162,7 @@
   },
   "66": {
     "inputs": {
-      "lora_name": "wan2.2_lora/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors",
+      "lora_name": "wan2.2_lora\\Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors",
       "strength_model": 0.9,
       "model": [
         "99",
@@ -195,7 +204,7 @@
     "inputs": {
       "frame_rate": 24,
       "loop_count": 0,
-      "filename_prefix": "2025-09-08/ComfyUI_20250908_003031_Wan-2.2_I2V",
+      "filename_prefix": "2025-09-10/ComfyUI_20250910_195848_Wan-2.2_I2V",
       "format": "video/h264-mp4",
       "pix_fmt": "yuv420p",
       "crf": 15,
@@ -231,6 +240,16 @@
       "title": "RIFE VFI (recommend rife47 and rife49)"
     }
   },
+  "84": {
+    "inputs": {
+      "clip_name": "umt5-xxl-encoder-Q5_K_M.gguf",
+      "type": "wan"
+    },
+    "class_type": "CLIPLoaderGGUF",
+    "_meta": {
+      "title": "CLIPLoader (GGUF)"
+    }
+  },
   "93": {
     "inputs": {
       "anything": [
@@ -262,11 +281,11 @@
         0
       ],
       "start_image": [
-        "95",
+        "101",
         0
       ],
       "end_image": [
-        "52",
+        "102",
         0
       ]
     },
@@ -275,13 +294,17 @@
       "title": "WAN 비디오 생성 (시작-끝 프레임)"
     }
   },
-  "95": {
+  "97": {
     "inputs": {
-      "image": "ComfyUI_00243_.png"
+      "model": "VACE-Wan2.1-1.3B-Preveiw/diffusion_pytorch_model.safetensors",
+      "base_precision": "bf16",
+      "quantization": "disabled",
+      "load_device": "main_device",
+      "attention_mode": "sdpa"
     },
-    "class_type": "LoadImage",
+    "class_type": "WanVideoModelLoader",
     "_meta": {
-      "title": "First Frame"
+      "title": "WanVideo Model Loader"
     }
   },
   "98": {
@@ -313,6 +336,24 @@
     "class_type": "CLIPLoader",
     "_meta": {
       "title": "CLIP 로드"
+    }
+  },
+  "101": {
+    "inputs": {
+      "image": "1310063016_16263999384971n.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "이미지 로드"
+    }
+  },
+  "102": {
+    "inputs": {
+      "image": "1310063016_16263999384971n.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "이미지 로드"
     }
   }
 }

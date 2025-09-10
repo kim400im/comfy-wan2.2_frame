@@ -178,8 +178,8 @@ def get_wan22_tv2_payload(workflow, payload):
     workflow["58"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
     workflow["94"]["inputs"]["width"] = payload["width"]
     workflow["94"]["inputs"]["height"] = payload["height"]
-    workflow["95"]["inputs"]["image"] = payload["start_image"]
-    workflow["52"]["inputs"]["image"] = payload["last_image"]
+    workflow["101"]["inputs"]["image"] = payload["start_image"]
+    workflow["102"]["inputs"]["image"] = payload["last_image"]
     return workflow
 
 
