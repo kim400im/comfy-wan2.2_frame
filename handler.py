@@ -16,6 +16,7 @@ from schemas.input import INPUT_SCHEMA
 import boto3
 from botocore.client import Config
 import random
+from urllib.parse import urlparse
 
 
 APP_NAME = 'runpod-wan22i2i-comfyui'
