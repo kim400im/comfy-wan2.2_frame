@@ -182,6 +182,24 @@ def get_wan22_tv2_payload(workflow, payload):
     workflow["102"]["inputs"]["image"] = payload["last_image"]
     return workflow
 
+def get_wan22_i2v_payload(workflow, payload):
+    workflow["76"]["inputs"]["text"] = payload["positive_prompt"]
+    workflow["72"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
+    workflow["80"]["inputs"]["width"] = payload["width"]
+    workflow["80"]["inputs"]["height"] = payload["height"]
+    workflow["81"]["inputs"]["width"] = payload["width"]
+    workflow["81"]["inputs"]["height"] = payload["height"]
+    workflow["78"]["inputs"]["image"] = payload["start_image"]
+    return workflow
+
+def get_wan21_i2v_payload(workflow, payload):
+    workflow["6"]["inputs"]["text"] = payload["positive_prompt"]
+    workflow["58"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
+    workflow["94"]["inputs"]["width"] = payload["width"]
+    workflow["94"]["inputs"]["height"] = payload["height"]
+    workflow["101"]["inputs"]["image"] = payload["start_image"]
+    workflow["102"]["inputs"]["image"] = payload["last_image"]
+    return workflow
 
 def get_workflow_payload(workflow_name, payload):
     with open(f'/workflows/{workflow_name}.json', 'r') as json_file:
@@ -189,6 +207,10 @@ def get_workflow_payload(workflow_name, payload):
 
     if workflow_name == "wan2.2_i2v_frame":
         workflow = get_wan22_tv2_payload(workflow, payload)
+    elif workflow_name == "wan2.2_i2v":
+        workflow = get_wan22_i2v_payload(workflow, payload)   # 새 함수
+    elif workflow_name == "wan2.1_i2v":
+        workflow = get_wan21_i2v_payload(workflow, payload)  # 새 함수
 
     return workflow
 
@@ -587,9 +609,15 @@ def handler(event):
         workflow_name = payload['workflow']
         payload = payload['payload']
 
-        # i2v 할 때 넣기 
-        payload['start_image'] = save_to_network_volume(payload['image_url_start'])
-        payload['last_image'] = save_to_network_volume(payload['image_url_end'])
+        # handler 내부
+        # 워크플로우에 따라 필요한 이미지를 다르게 저장
+        if workflow_name in ['wan2.2_i2v_frame', 'wan2.1_i2v']:
+            # 2장의 이미지 필요
+            payload['start_image'] = save_to_network_volume(payload.get('image_url_start'))
+            payload['last_image'] = save_to_network_volume(payload.get('image_url_end'))
+        elif workflow_name in ['wan2.2_i2v']:
+            # 1장의 이미지만 필요
+            payload['start_image'] = save_to_network_volume(payload.get('image_url'))
 
         if workflow_name == 'default':
             workflow_name = 'wan2.2_i2v_frame'
