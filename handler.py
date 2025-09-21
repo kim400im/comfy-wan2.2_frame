@@ -188,6 +188,7 @@ def get_wan22_i2v_payload(workflow, payload):
     workflow["72"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
     workflow["80"]["inputs"]["width"] = payload["width"]
     workflow["80"]["inputs"]["height"] = payload["height"]
+    workflow["80"]["inputs"]["length"] = payload["length"]
     workflow["81"]["inputs"]["width"] = payload["width"]
     workflow["81"]["inputs"]["height"] = payload["height"]
     workflow["78"]["inputs"]["image"] = payload["start_image"]
@@ -202,6 +203,15 @@ def get_wan21_i2v_payload(workflow, payload):
     workflow["102"]["inputs"]["image"] = payload["last_image"]
     return workflow
 
+# wan2.2 text to video 
+def get_wan22_t2v_payload(workflow, payload):
+    workflow["74"]["inputs"]["text"] = payload["positive_prompt"]
+    workflow["67"]["inputs"]["noise_seed"] = random.randint(0, 2**32 - 1)
+    workflow["80"]["inputs"]["width"] = payload["width"]
+    workflow["80"]["inputs"]["height"] = payload["height"]
+    workflow["80"]["inputs"]["length"] = payload["length"]
+    return workflow
+
 def get_workflow_payload(workflow_name, payload):
     with open(f'/workflows/{workflow_name}.json', 'r') as json_file:
         workflow = json.load(json_file)
@@ -212,7 +222,8 @@ def get_workflow_payload(workflow_name, payload):
         workflow = get_wan22_i2v_payload(workflow, payload)   # 새 함수
     elif workflow_name == "wan2.1_i2v":
         workflow = get_wan21_i2v_payload(workflow, payload)  # 새 함수
-
+    elif workflow_name == "wan2.2_t2v":     # 🔥 추가
+        workflow = get_wan22_t2v_payload(workflow, payload)
     return workflow
 
 
